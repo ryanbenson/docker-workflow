@@ -1,0 +1,21 @@
+language: generic
+
+# needed for docker
+sudo: required
+services:
+  - docker
+
+# do these before our tests are ran
+# so build our docker image
+# use a label/tag so we're not dealing with an ID
+# the tag isn't important what the tag is, it'll be
+# destroyed later. But best practices to use the normal format
+before_install:
+  - docker build -t ryanbenson/docker-workflow -f Dockerfile.dev .
+
+# Run the command to run the test suite
+script:
+  # ensure that the test command terminates (sometimes you can configure jest to always run and wait for changes)
+  # can include coverage for coverage integration too
+  - docker run -e CI=true ryanbenson/docker-workflow npm run test:unit -- --coverage
+

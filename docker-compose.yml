@@ -1,0 +1,30 @@
+version: '3'
+services:
+    web:
+        # since we are using Dockerfile.dev / .prod
+        # we can't use build: .
+        build: 
+            # When the value supplied is a relative path, it is interpreted as relative to the location of the Compose file. This directory is also the build context that is sent to the Docker daemon
+            context: .
+            # where is the file, and what is the filename?
+            dockerfile: Dockerfile.dev
+        ports:
+            - "8080:8080"
+        environment:
+            - npm_config_unsafe_perm=true
+        volumes:
+            # take local dir and put it in the app dir / workspace
+            - .:/app
+            - node_modules
+    # will be used to just run our tests
+    tests:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        # don't need ports since we're not networking to it
+        # need volumes though
+        volumes:
+            - .:/app
+            - node_modules
+        # override start command to run our tests
+        command: ["npm", "run", "test:unit"]

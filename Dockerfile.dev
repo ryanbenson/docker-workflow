@@ -1,0 +1,14 @@
+# only for development / local use
+FROM node:alpine
+# set the workspace in the container
+WORKDIR /app
+# Get our package info
+COPY package.json .
+COPY package-lock.json .
+# install deps
+RUN npm install
+RUN npm install -g @vue/cli
+# copy the files
+COPY . .
+# Run things
+CMD ["npm", "run", "serve"]
